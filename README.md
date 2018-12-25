@@ -1,16 +1,88 @@
-# liaoin-security-pc
-了赢科技权限验证PC端封装
+# 简介
+了赢科技springSecurity和springSocial验证框架Pc端使用
 
-### 项目结构
+- 源码地址：
+    - GitHub：https://github.com/surpassm/liaoin-security-pc
+- 使用样例：https://github.com/surpassm/liaoin-sercurity-test
 
---`liaoin-security`  父级目录  
-----`liaoin-security-app`  APP封装  
-----`liaoin-security-core`  具体代码封装  
-----`liaoin-security-pc`  浏览器封装  
-----`liaoin-security-test`  测试  
+### 版本基础
+```
+<dependency>
+    <groupId>com.github.surpassm</groupId>
+    <artifactId>liaoin-security-core</artifactId>
+    <version>0.0.1.RELEASE</version>
+</dependency>
+```
+### 如何使用
+在该项目的帮助下，我们的Spring Boot可以轻松的引入liaoin-security-pc，主需要做下面步骤：
+- 怎么用该安全模块   
+    - 在pom.xml中引入依赖：
+    ~~~
+        <-- PC端核心依赖 -->
+        <dependency>
+            <groupId>com.github.surpassm</groupId>
+            <artifactId>liaoin-security-core</artifactId>
+            <version>0.0.1.RELEASE</version>
+        </dependency>
+        <-- PC端依赖 -->
+        <dependency>
+            <groupId>com.github.surpassm</groupId>
+            <artifactId>liaoin-security-pc</artifactId>
+            <version>0.0.1.RELEASE</version>
+        </dependency>
+        
+        <-- 当前你的系统spring版本应该正式发布版本v1.5.13 或者直接使用spring全家桶如下-->
+        <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>io.spring.platform</groupId>
+                        <artifactId>platform-bom</artifactId>
+                        <version>Brussels-SR12</version>
+                        <type>pom</type>
+                        <scope>import</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.springframework.cloud</groupId>
+                        <artifactId>spring-cloud-dependencies</artifactId>
+                        <version>Dalston.SR5</version>
+                        <type>pom</type>
+                        <scope>import</scope>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+        
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>2.3.2</version>
+                        <configuration>
+                            <source>1.8</source>
+                            <target>1.8</target>
+                            <encoding>UTF-8</encoding>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            
+    ~~~
+    - 需要在springBoot启动类中添加如下注解
+    ~~~
+        @ComponentScan(value = {"com.liaoin.security","您自己项目启动类扫描"})
+    ~~~
+    - 配置系统参见配置说明
+    - 增加UserDetailsService接口实现
+    - 如果需要登陆“记住我”功能，需要创建数据库表，参见sql
+    - 如果需要第三方应用微信登陆、QQ登陆，需要额外配置相关参数
+        - 配置appId、appSecret
+        - 创建并配置用户注册页面，实现注册服务，在服务中必须调用ProviderSignInUtils的doPostSignUp方法
+        - 添加SocialUserDetailsService接口实现
+        - 创建社交登陆用的表，参见sql
 
 
-### 使用说明
+### 参数配置
+更细致的配置内容参考如下：
 - 具体配置说明，这里的格式是yml
 ~~~
 liaoin:
@@ -138,70 +210,6 @@ spring:
     org.springframework.social.connect.ConnectionSignUp
     如DemoConnectionSignUp
 ~~~
-- 怎么用该安全模块   
-    - 引入依赖
-    ~~~
-        <-- PC端依赖 -->
-        <dependency>
-            <groupId>com.liaoin.security</groupId>
-            <artifactId>liaoin-security-pc</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <-- APP端依赖 -->
-        <dependency>
-            <groupId>com.liaoin.security</groupId>
-            <artifactId>liaoin-security-app</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        
-        <-- 当前你的系统spring版本应该正式发布版本v1.5.13 或者直接使用spring全家桶如下-->
-        <dependencyManagement>
-                <dependencies>
-                    <dependency>
-                        <groupId>io.spring.platform</groupId>
-                        <artifactId>platform-bom</artifactId>
-                        <version>Brussels-SR12</version>
-                        <type>pom</type>
-                        <scope>import</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.springframework.cloud</groupId>
-                        <artifactId>spring-cloud-dependencies</artifactId>
-                        <version>Dalston.SR5</version>
-                        <type>pom</type>
-                        <scope>import</scope>
-                    </dependency>
-                </dependencies>
-            </dependencyManagement>
-        
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>2.3.2</version>
-                        <configuration>
-                            <source>1.8</source>
-                            <target>1.8</target>
-                            <encoding>UTF-8</encoding>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-            
-    ~~~
-    - 需要在springBoot启动类中添加如下注解
-    ~~~
-        @ComponentScan(value = {"com.liaoin.security","您自己项目启动类扫描"})
-    ~~~
-    - 配置系统参见配置说明
-    - 增加UserDetailsService接口实现
-    - 如果需要登陆“记住我”功能，需要创建数据库表，参见sql
-    - 如果需要第三方应用微信登陆、QQ登陆，需要额外配置相关参数
-        - 配置appId、appSecret
-        - 创建并配置用户注册页面，实现注册服务，在服务中必须调用ProviderSignInUtils的doPostSignUp方法
-        - 添加SocialUserDetailsService接口实现
-        - 创建社交登陆用的表，参见sql
 
 
 #### **2018-09-24 更新**
